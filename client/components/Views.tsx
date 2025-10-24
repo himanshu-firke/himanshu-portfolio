@@ -2,15 +2,34 @@ import { useEffect, useState } from "react";
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
 
 export default function ViewsSection() {
-  const [views, setViews] = useState(0);
+  const [views, setViews] = useState(50); // Start from 50
   const [displayedViews, setDisplayedViews] = useState(0);
   const { ref, isVisible } = useIntersectionObserver();
 
   useEffect(() => {
-    const viewCount = localStorage.getItem("portfolioViews") || "0";
-    const count = parseInt(viewCount) + 1;
-    localStorage.setItem("portfolioViews", count.toString());
-    setViews(count);
+    // Check if user has already visited (using sessionStorage for single session)
+    const hasVisited = sessionStorage.getItem("hasVisited");
+    
+    // Fetch current view count
+    fetch("/api/views")
+      .then(res => res.json())
+      .then(data => {
+        setViews(data.views);
+        
+        // Increment only if first visit in this session
+        if (!hasVisited) {
+          sessionStorage.setItem("hasVisited", "true");
+          fetch("/api/views/increment", { method: "POST" })
+            .then(res => res.json())
+            .then(data => setViews(data.views))
+            .catch(err => console.error("Error incrementing views:", err));
+        }
+      })
+      .catch(err => {
+        console.error("Error fetching views:", err);
+        // Fallback to 50 if API fails
+        setViews(50);
+      });
   }, []);
 
   useEffect(() => {
