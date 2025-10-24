@@ -40,3 +40,7 @@ lerna-debug.log*
 
 # Debug
 debug.log
+
+# Documentation files (unnecessary for deployment)
+*.md
+!README.md
