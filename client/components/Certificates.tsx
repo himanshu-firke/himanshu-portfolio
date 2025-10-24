@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
 const certificates = [
@@ -10,6 +10,15 @@ const certificates = [
 
 export default function CertificatesSection() {
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  // Auto-rotate carousel every 4 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % certificates.length);
+    }, 4000); // Rotate every 4 seconds
+
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, []);
 
   const handleNext = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % certificates.length);
@@ -284,9 +293,10 @@ export default function CertificatesSection() {
                 }}
                 transition={{
                   type: 'spring',
-                  stiffness: 100,
-                  damping: 20,
-                  mass: 1,
+                  stiffness: 60,
+                  damping: 25,
+                  mass: 0.8,
+                  duration: 0.8,
                 }}
                 style={{
                   zIndex: style.zIndex,
