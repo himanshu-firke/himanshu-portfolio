@@ -4,13 +4,16 @@ import mongoose from 'mongoose';
 const MONGODB_URI = process.env.MONGODB_URI || '';
 
 // MongoDB Schema
-const viewCounterSchema = new mongoose.Schema({
-  count: { type: Number, default: 50 },
-  lastUpdated: { type: Date, default: Date.now },
-});
+const contactSchema = new mongoose.Schema({
+  email: { type: String, required: true },
+  name: { type: String, required: true },
+  subject: { type: String, required: true },
+  message: { type: String, required: true },
+  submittedAt: { type: Date, default: Date.now },
+}, { timestamps: true });
 
 // Get or create model
-const ViewCounter = mongoose.models.ViewCounter || mongoose.model('ViewCounter', viewCounterSchema);
+const Contact = mongoose.models.Contact || mongoose.model('Contact', contactSchema);
 
 // Database connection
 let cached = global.mongoose;
@@ -44,7 +47,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   // Handle OPTIONS request
@@ -52,40 +55,37 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(200).end();
   }
 
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
   try {
     // Connect to MongoDB
     await connectDB();
 
-    if (req.method === 'GET') {
-      // Get current view count
-      let counter = await ViewCounter.findOne();
-      
-      if (!counter) {
-        // Create initial counter if doesn't exist
-        counter = await ViewCounter.create({ count: 50 });
-      }
-      
-      return res.status(200).json({ views: counter.count });
+    const { email, name, subject, message } = req.body;
+
+    // Validate required fields
+    if (!email || !name || !subject || !message) {
+      return res.status(400).json({ error: 'All fields are required' });
     }
 
-    if (req.method === 'POST') {
-      // Increment view count
-      let counter = await ViewCounter.findOne();
-      
-      if (!counter) {
-        counter = await ViewCounter.create({ count: 51 });
-      } else {
-        counter.count += 1;
-        counter.lastUpdated = new Date();
-        await counter.save();
-      }
-      
-      return res.status(200).json({ views: counter.count });
-    }
+    // Create new contact submission
+    const contact = await Contact.create({
+      email,
+      name,
+      subject,
+      message,
+      submittedAt: new Date(),
+    });
 
-    return res.status(405).json({ error: 'Method not allowed' });
+    return res.status(201).json({ 
+      success: true, 
+      message: 'Message sent successfully!',
+      id: contact._id 
+    });
   } catch (error) {
     console.error('Database error:', error);
-    return res.status(500).json({ error: 'Internal server error', views: 50 });
+    return res.status(500).json({ error: 'Failed to send message. Please try again.' });
   }
 }

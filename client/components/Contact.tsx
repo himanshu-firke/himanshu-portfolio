@@ -9,6 +9,8 @@ export default function ContactSection() {
     message: "",
   });
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const { ref, isVisible } = useIntersectionObserver();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -17,14 +19,38 @@ export default function ContactSection() {
       ...prev,
       [name]: value,
     }));
+    setError(""); // Clear error on input change
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    setSubmitted(true);
-    setFormData({ email: "", name: "", subject: "", message: "" });
-    setTimeout(() => setSubmitted(false), 3000);
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSubmitted(true);
+        setFormData({ email: "", name: "", subject: "", message: "" });
+        setTimeout(() => setSubmitted(false), 3000);
+      } else {
+        setError(data.error || "Failed to send message. Please try again.");
+      }
+    } catch (err) {
+      console.error("Error submitting form:", err);
+      setError("Failed to send message. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -60,13 +86,7 @@ export default function ContactSection() {
                 <a
                   key={link.label}
                   href={link.href}
-                  target={link.label === "Email" ? undefined : "_blank"}
-                  rel={link.label === "Email" ? undefined : "noopener noreferrer"}
-                  onClick={(e) => {
-                    if (link.label === "Email") {
-                      window.location.href = link.href;
-                    }
-                  }}
+                  {...(link.label !== "Email" && { target: "_blank", rel: "noopener noreferrer" })}
                   className={`flex items-center gap-4 p-4 rounded-lg border border-border hover:border-primary/50 hover:bg-primary/10 transition-all duration-300 group transform ${
                     isVisible
                       ? "opacity-100 translate-x-0"
@@ -173,11 +193,20 @@ export default function ContactSection() {
 
               <button
                 type="submit"
-                className="w-full px-6 py-3 bg-primary hover:bg-primary/90 text-background font-bold rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-primary/50 hover:scale-105 group relative overflow-hidden"
+                disabled={loading}
+                className="w-full px-6 py-3 bg-primary hover:bg-primary/90 text-background font-bold rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-primary/50 hover:scale-105 group relative overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
-                <span className="relative z-10">Send Message</span>
+                <span className="relative z-10">
+                  {loading ? "Sending..." : "Send Message"}
+                </span>
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 animate-pulse opacity-0 group-hover:opacity-100" />
               </button>
+
+              {error && (
+                <div className="p-4 bg-red-500/20 border border-red-500/50 rounded-lg text-red-400 text-center font-medium animate-fadeInUp">
+                  ✗ {error}
+                </div>
+              )}
 
               {submitted && (
                 <div className="p-4 bg-primary/20 border border-primary/50 rounded-lg text-primary text-center font-medium animate-fadeInUp">

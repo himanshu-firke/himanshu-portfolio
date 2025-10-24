@@ -7,20 +7,27 @@ export default function ViewsSection() {
   const { ref, isVisible } = useIntersectionObserver();
 
   useEffect(() => {
-    // Calculate base views: starts at 50, increments based on days since Jan 1, 2025
-    const startDate = new Date('2025-01-01');
-    const today = new Date();
-    const daysSinceLaunch = Math.floor((today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+    const hasVisited = sessionStorage.getItem("hasVisited");
     
-    // Base of 50 + (1-3 views per day based on date)
-    const baseViews = 50 + (daysSinceLaunch * 2);
-    
-    // Add some randomness based on time of day (0-5 additional views)
-    const hourOfDay = today.getHours();
-    const additionalViews = Math.floor((hourOfDay / 24) * 5);
-    
-    const totalViews = baseViews + additionalViews;
-    setViews(totalViews);
+    // Fetch current view count from API
+    fetch("/api/views")
+      .then(res => res.json())
+      .then(data => {
+        setViews(data.views);
+        
+        // Increment only if first visit in this session
+        if (!hasVisited) {
+          sessionStorage.setItem("hasVisited", "true");
+          fetch("/api/views", { method: "POST" })
+            .then(res => res.json())
+            .then(data => setViews(data.views))
+            .catch(err => console.error("Error incrementing views:", err));
+        }
+      })
+      .catch(err => {
+        console.error("Error fetching views:", err);
+        setViews(50); // Fallback
+      });
   }, []);
 
   useEffect(() => {

@@ -45,13 +45,7 @@ export default function Footer() {
                 <li key={link.label}>
                   <a
                     href={link.href}
-                    target={link.label === "Email" ? undefined : "_blank"}
-                    rel={link.label === "Email" ? undefined : "noopener noreferrer"}
-                    onClick={(e) => {
-                      if (link.label === "Email") {
-                        window.location.href = link.href;
-                      }
-                    }}
+                    {...(link.label !== "Email" && { target: "_blank", rel: "noopener noreferrer" })}
                     className="text-foreground/70 hover:text-primary transition-colors"
                   >
                     {link.label}
