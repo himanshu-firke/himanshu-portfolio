@@ -2,7 +2,7 @@
 
 A modern, full-stack portfolio website built with React, TypeScript, MongoDB, and Express. Features real-time view tracking, animated UI components, and a fully functional contact form.
 
-🔗 **Live Demo:** [https://himanshu-portfolio.vercel.app](https://himanshu-portfolio.vercel.app)
+🔗 **Live Demo:** [https://himanshu-portfolio.vercel.app](https://himanshu-portfolio-01.vercel.app/)
 
 ---
 
