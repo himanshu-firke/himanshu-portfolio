@@ -436,7 +436,7 @@ export default function Hero() {
                 <div className="absolute inset-0 rounded-full bg-transparent overflow-hidden flex items-center justify-center shadow-2xl group-hover:shadow-pink-500/60 transition-shadow duration-300 border-2 border-primary/40">
                   {/* Background fill (covers circle) to avoid left/right gaps while keeping the main photo uncropped */}
                   <img
-                    src="https://cdn.builder.io/api/v1/image/assets%2F1545954023e849dbaa09268f617fe103%2F9430b5832eb34c89b21d38bb5757e73c?format=webp&width=800"
+                    src="/profile.jpg"
                     alt=""
                     aria-hidden="true"
                     className="absolute inset-0 w-full h-full object-cover scale-105 filter blur-sm brightness-75"
@@ -444,7 +444,7 @@ export default function Hero() {
 
                   {/* Foreground image - full photo without cropping */}
                   <img
-                    src="https://cdn.builder.io/api/v1/image/assets%2F1545954023e849dbaa09268f617fe103%2F9430b5832eb34c89b21d38bb5757e73c?format=webp&width=800"
+                    src="/profile.jpg"
                     alt="Himanshu Firke"
                     className="relative w-full h-full object-contain object-center rounded-full bg-transparent z-10"
                   />
@@ -494,7 +494,7 @@ export default function Hero() {
 
             <div className="flex flex-col sm:flex-row gap-2 md:gap-3 pt-1 md:pt-2">
               <a
-                href="https://drive.google.com/file/d/1RLEeBvSVyMudb7K0cjcky9ouDYr_nUKO/view?usp=drive_link"
+                href="https://drive.google.com/file/d/1T-SZ0SbporBydV84cBsehcYUoMx6QxYd/view?usp=sharing"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-5 py-2.5 md:px-6 md:py-3 lg:px-8 lg:py-4 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-background font-bold rounded-full transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/50 hover:scale-105 font-poppins text-sm md:text-base lg:text-lg text-center"
