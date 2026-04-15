@@ -436,7 +436,7 @@ export default function Hero() {
                 <div className="absolute inset-0 rounded-full bg-transparent overflow-hidden flex items-center justify-center shadow-2xl group-hover:shadow-pink-500/60 transition-shadow duration-300 border-2 border-primary/40">
                   {/* Background fill (covers circle) to avoid left/right gaps while keeping the main photo uncropped */}
                   <img
-                    src="/profile.jpg"
+                    src="/profile.jpeg"
                     alt=""
                     aria-hidden="true"
                     className="absolute inset-0 w-full h-full object-cover scale-105 filter blur-sm brightness-75"
@@ -444,7 +444,7 @@ export default function Hero() {
 
                   {/* Foreground image - full photo without cropping */}
                   <img
-                    src="/profile.jpg"
+                    src="/profile.jpeg"
                     alt="Himanshu Firke"
                     className="relative w-full h-full object-contain object-center rounded-full bg-transparent z-10"
                   />
