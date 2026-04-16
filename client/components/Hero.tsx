@@ -494,7 +494,7 @@ export default function Hero() {
 
             <div className="flex flex-col sm:flex-row gap-2 md:gap-3 pt-1 md:pt-2">
               <a
-                href="https://drive.google.com/file/d/1T-SZ0SbporBydV84cBsehcYUoMx6QxYd/view?usp=sharing"
+                href="https://drive.google.com/file/d/1SEFrWyzb4Wld-hcMdXirRC0KimbrbbIZ/view?usp=sharing"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-5 py-2.5 md:px-6 md:py-3 lg:px-8 lg:py-4 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-background font-bold rounded-full transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/50 hover:scale-105 font-poppins text-sm md:text-base lg:text-lg text-center"
